@@ -1,0 +1,62 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  EStreams: An Integrated Dataset and Catalogue of
+  Streamflow, Hydro-Climatic Variables and Landscape
+  Descriptors for Europe
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Thiago V M
+    family-names: do Nascimento
+    email: thiago.nascimento@eawag.ch
+    affiliation: Eawag
+    orcid: 'https://orcid.org/0000-0001-6213-8310'
+  - given-names: Julia
+    family-names: Rudlang
+    orcid: 'https://orcid.org/0009-0002-5688-8777'
+    affiliation: TU Delft
+  - orcid: 'https://orcid.org/0000-0003-4619-2178'
+    given-names: Marvin
+    family-names: '  Höge'
+    affiliation: Eawag
+  - family-names: '  van der Ent'
+    given-names: Ruud
+    orcid: 'https://orcid.org/0000-0001-5450-4333'
+  - given-names: Máté
+    family-names: Chappon
+    affiliation: Széchenyi István University
+  - given-names: Jan
+    family-names: Seibert
+    affiliation: UZH
+    orcid: 'https://orcid.org/0000-0002-6314-2124'
+  - given-names: Markus
+    family-names: '  Hrachowitz'
+    orcid: 'https://orcid.org/0000-0003-0508-1017'
+    affiliation: TU Delft
+  - given-names: Fabrizio
+    family-names: '  Fenicia'
+    affiliation: Eawag
+repository-code: 'https://github.com/thiagovmdon/EStreams.git'
+abstract: >-
+  EStreams is an extensive catalogue of openly available
+  stream records and a dataset of hydro-climatic variables
+  and landscape descriptors for 15,047 European catchments.
+  The dataset includes catchment-aggregated hydro-climatic
+  indices as well as landscape attributes and spans up to
+  120 years of records. The catalogue includes detailed
+  guidance to allow users to directly access the sources of
+  streamflow used. 
+keywords:
+  - Hydrology
+  - Streamflow
+  - Meteorology
+  - Catchments
+  - Europe
+license: BSD-3-Clause
+version: '0.1'
+date-released: '2024-03-02'

@@ -1,0 +1,120 @@
+// Terrain descriptors extraction from MERIT:
+
+// Author: Thiago Nascimento (thiago.nascimento@eawag.ch)
+
+// This notebook is part of the EStreams publication and was used to extract and aggregate 
+// terrain characteristics from the MERIT dataset. 
+// Note that it can also be adapted to other DEM avaialble in GEE. 
+// ---------------------------------------------------------------------------------------------------
+
+// Purpose: Extract and aggregate elevation data from the MERIT dataset for specified basins.
+// Inputs: Basins shapefile (uploaded as an asset), MERIT data.
+// Outputs: CSV file with terrain descriptors for each basin.
+
+// Import the basins shapefile and add it as a layer to the map:
+var basins = ee.FeatureCollection("projects/ee-thiagovmdon/assets/estreams_catchments");
+Map.addLayer(basins, {}, 'Basins shapefile');
+
+// Retrieve the dataset to be used (MERIT)
+var dataset = ee.Image('MERIT/DEM/v1_0_3').select('dem');
+
+// Calculate slope. Units are degrees, range is FROM [0,90).
+var slope = ee.Terrain.slope(dataset);
+
+// Define a function to calculate the max, min and average elevation:
+/**
+ * Calculate elevation statistics for a given feature.
+ * @param {ee.Feature} feature - Feature for which elevation statistics are calculated.
+ * @returns {ee.Feature} - Feature containing min, max, and mean elevation statistics.
+ */
+function calculateElevation(feature) {
+  
+  var datasetused = dataset.clip(feature.geometry()); // Clip the dataset to the feature's geometry
+
+  var stats = datasetused.reduceRegion({
+    reducer: ee.Reducer.minMax().combine(ee.Reducer.mean(), '', true), // Calculate min, max, and mean
+    geometry: feature.geometry(),
+    scale: 90,
+    maxPixels: 1e10
+  });
+ 
+  return ee.Feature(null, {
+    'basin_id': feature.get('basin_id'), // Store the code
+    'min_elevation': stats.getNumber('dem_min'),
+    'max_elevation': stats.getNumber('dem_max'),
+    'mean_elevation': stats.getNumber('dem_mean')
+  });
+}
+
+// Define a function to calculate slope statistics:
+/**
+ * Calculate slope statistics for a given feature.
+ * @param {ee.Feature} feature - Feature for which slope statistics are calculated.
+ * @returns {ee.Feature} - Feature containing slope, flat area fraction, and steep area fraction.
+ */
+function calculateSlope(feature) {
+  // Clip the dataset to the feature's geometry
+  var datasetUsed = slope.clip(feature.geometry());
+
+  // Calculate mean slope
+  var slopeStats = datasetUsed.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 90,
+    maxPixels: 1e10
+  });
+
+  // Define thresholds for flat and steep areas
+  var flatThreshold = 3;
+  var steepThreshold = 15;
+
+  // Create binary images where 1 represents flat/steep areas and 0 represents non-flat/steep areas
+  var flatAreas = datasetUsed.lte(flatThreshold);
+  var steepAreas = datasetUsed.gt(steepThreshold);
+
+  // Calculate the percentage of flat areas
+  var flatStats = flatAreas.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 90,
+    maxPixels: 1e10
+  });
+
+  // Calculate the percentage of steep areas
+  var steepStats = steepAreas.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 90,
+    maxPixels: 1e10
+  });
+
+  // Create a new Feature with all the calculated values
+  return ee.Feature(null, {
+    'basin_id': feature.get('basin_id'), // Store the code
+    'slp_dg_av': slopeStats.getNumber('slope'),
+    'flat_area_frac': flatStats.getNumber('slope'),
+    'steep_area_frac': steepStats.getNumber('slope')
+  });
+}
+
+// Map over the selected polygons, calculate elevation statistics to be exported:
+var elevationStatsCollection = basins.map(calculateElevation);
+
+// Export the elevation statistics feature collection as a CSV file
+Export.table.toDrive({
+  collection: elevationStatsCollection,
+  description: 'EStreams_elevation_attributes_gee',
+  folder: 'EStreams_exports',
+  fileFormat: 'CSV'
+});
+
+// Map over the selected polygons, calculate slope statistics to be exported:
+var slopeStatsCollection = basins.map(calculateSlope);
+
+// Export the slope statistics feature collection as a CSV file
+Export.table.toDrive({
+  collection: slopeStatsCollection,
+  description: 'EStreams_slope_attributes_gee',
+  folder: 'EStreams_exports', 
+  fileFormat: 'CSV'
+});

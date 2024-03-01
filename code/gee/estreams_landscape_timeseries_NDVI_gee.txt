@@ -1,0 +1,122 @@
+// NDVI time-series extraction from MODIS:
+
+// Author: Thiago Nascimento (thiago.nascimento@eawag.ch)
+
+// This notebook is part of the EStreams publication and was used to extract  
+// and aggregate Normalized Difference Vegetation Index (NDVI) time-series from the MODIS dataset. 
+
+// Note that the catchments shapefile must have been added as an Asset to your  
+// GEE account before and the correct path must be adapted as needed. 
+// ---------------------------------------------------------------------------------------------------
+
+// Purpose: Extract and aggregate NDVI time-series from the MODIS dataset for specified basins.
+// Inputs: Basins shapefile (uploaded as an asset), MODIS NDVI data.
+// Outputs: CSV file with mean NDVI values for each basin over time.
+
+// Import the basins shapefile and add it as a layer to the map:
+var basinsFC = ee.FeatureCollection("projects/ee-thiagovmdon/assets/estreams_catchments");
+
+// Define the chunk size
+var chunkSize = 50;
+
+// Calculate the number of chunks needed
+var numChunks = Math.ceil(basinsFC.size().getInfo() / chunkSize);
+
+// Monthly time series NDVI
+var ndviCollection = ee.ImageCollection('MODIS/061/MOD13A1')
+  .select('NDVI')
+  .filterDate('2001-01-01', '2022-12-31')
+  .map(function(img) {
+    var date = ee.Date(img.get('system:time_start'));
+    return img.set('date', date, 'month', date.get('month'), 'year', date.get('year'));
+  });
+
+var months = ee.List.sequence(1, 12);
+var years = ee.List.sequence(2001, 2022);
+
+// Create ImageCollection with monthly mean NDVI for each basin
+var monthlyNdviByBasin = ee.ImageCollection.fromImages(
+  years.map(function(year) {
+    return months.map(function(month) {
+      var filtered = ndviCollection
+        .filter(ee.Filter.calendarRange(year, year, 'year'))
+        .filter(ee.Filter.calendarRange(month, month, 'month'));
+      return filtered.mean()
+        .set('year', year)
+        .set('month', month)
+        .set('date', ee.Date.fromYMD(year, month, 1));
+    });
+  }).flatten()
+);
+
+// Unique identifier for each basin
+var basinID = 'basin_id';
+
+// Loop through each chunk
+for (var chunkIndex = 0; chunkIndex < numChunks; chunkIndex++) {
+  // Calculate start and end index for the current chunk
+  var startIdx = chunkIndex * chunkSize;
+  var endIdx = (chunkIndex + 1) * chunkSize - 1;
+
+  // Convert the FeatureCollection to a list
+  var basinList = basinsFC.toList(basinsFC.size());
+
+  // Select the subset based on index using ee.List.slice()
+  var selectedBasins = ee.FeatureCollection(basinList.slice(startIdx, endIdx + 1));
+
+  // Filter ImageCollection to include only specified basins
+  var selectedDataset = ee.ImageCollection(monthlyNdviByBasin).filterBounds(selectedBasins);
+
+  // Map over ImageCollection to get mean NDVI values for each basin
+  var basinTriplets = selectedDataset
+    .map(function(image) {
+      return image.reduceRegions({
+        collection: selectedBasins,
+        reducer: ee.Reducer.mean(),
+        scale: 500
+      }).filter(ee.Filter.neq('mean', null))
+        .map(function(feature) {
+          return feature.set('imageId', image.id());
+        });
+    })
+    .flatten();
+
+  // Select relevant columns for the output table
+  var selectedTriplets = basinTriplets.select(['.*'], null, false);
+
+  // Reformat data into "wide" format
+  var formatTable = function(table, rowId, colId) {
+    var rows = table.distinct(rowId);
+
+    var joinedTable = ee.Join.saveAll('matches').apply({
+      primary: rows,
+      secondary: table,
+      condition: ee.Filter.equals({
+        leftField: rowId,
+        rightField: rowId
+      })
+    });
+
+    return joinedTable.map(function(row) {
+      var values = ee.List(row.get('matches'))
+        .map(function(feature) {
+          feature = ee.Feature(feature);
+          return [feature.get(colId), feature.get('mean')];
+        });
+      return row.select([rowId]).set(ee.Dictionary(values.flatten()));
+    });
+  };
+
+  // Apply formatting function to data
+  var formattedTable = formatTable(selectedTriplets, basinID, 'imageId');
+
+  // Export reformatted table to Google Drive
+  var exportDesc = 'EStreams_modis_NDVI_mean_gee_' + startIdx + '_' + endIdx;
+  Export.table.toDrive({
+    collection: formattedTable,
+    description: exportDesc,
+    folder: 'EStreams_exports',
+    fileNamePrefix: exportDesc,
+    fileFormat: 'CSV'
+  });
+}
