@@ -1,2 +1,2 @@
 Files:
-- Attributes to be concatenated. 
+- Attributes from the new basins to be concatenated. 

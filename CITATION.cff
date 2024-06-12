@@ -22,9 +22,9 @@ authors:
     affiliation: TU Delft
   - orcid: 'https://orcid.org/0000-0003-4619-2178'
     given-names: Marvin
-    family-names: '  Höge'
+    family-names: 'Höge'
     affiliation: Eawag
-  - family-names: '  van der Ent'
+  - family-names: van der Ent
     given-names: Ruud
     orcid: 'https://orcid.org/0000-0001-5450-4333'
   - given-names: Máté
@@ -35,17 +35,18 @@ authors:
     affiliation: UZH
     orcid: 'https://orcid.org/0000-0002-6314-2124'
   - given-names: Markus
-    family-names: '  Hrachowitz'
+    family-names: Hrachowitz
     orcid: 'https://orcid.org/0000-0003-0508-1017'
     affiliation: TU Delft
   - given-names: Fabrizio
-    family-names: '  Fenicia'
+    family-names: 'Fenicia'
+    orcid: 'https://orcid.org/0000-0002-8065-6004'
     affiliation: Eawag
 repository-code: 'https://github.com/thiagovmdon/EStreams.git'
 abstract: >-
   EStreams is an extensive catalogue of openly available
   stream records and a dataset of hydro-climatic variables
-  and landscape descriptors for 15,047 European catchments.
+  and landscape descriptors for more than 15,000 European catchments.
   The dataset includes catchment-aggregated hydro-climatic
   indices as well as landscape attributes and spans up to
   120 years of records. The catalogue includes detailed
@@ -58,5 +59,9 @@ keywords:
   - Catchments
   - Europe
 license: BSD-3-Clause
-version: '0.1'
+version: '0.2.0'
 date-released: '2024-03-02'
+identifiers:
+  - description: Latest version of software
+  - type: doi
+  - value: "10.5281/zenodo.10733141"

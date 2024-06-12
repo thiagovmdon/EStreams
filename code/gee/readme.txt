@@ -2,7 +2,7 @@ Observations:
 
 - This folder contains five scripts:
 	- EStreams_landscape_attributes_landcover_gee.txt: Extract the landcover attributes from Corine.
-	- EStreams_landscape_attributes_terrain_gee.txt: Extract elevation and slope attributes from MERIT. 
+	- EStreams_landscape_attributes_topography_gee.txt: Extract elevation and slope attributes from MERIT. 
 	- EStreams_landscape_timeseries_LAI_gee.txt: Extract Leaf Area Index information from MODIS.
 	- EStreams_landscape_timeseries_NDVI_gee.txt: Extract Normalized Difference Vegetation Index information from MODIS.
 	- EStreams_landscape_timeseries_Snow_Cover_gee.txt: Extract snow cover percentage information from MODIS. 
@@ -10,7 +10,7 @@ Observations:
 - Before using the codes, the users should:
 	- Make a free GEE account.
 	- Upload at the estreams_catchments{cpg, dbf, prj, shp, shx} as an asset. 
-	- Adapt adequately  the var basins in their individual GEE codes, e.g., ee.FeatureCollection("projects/ee-thiagovmdon/assets/estreams_catchments").
+	- Adapt adequately  the var basins name in their individual GEE codes, e.g., ee.FeatureCollection("projects/ee-thiagovmdon/assets/estreams_catchments").
 - After using the codes, the users should:
 	- Store the exported csv-files locally at their adequate directory. 
 - More information and references are commented in the individual scripts. 

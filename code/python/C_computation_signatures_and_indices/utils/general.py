@@ -11,6 +11,7 @@ import numpy as np
 import warnings
 from tqdm import tqdm
 import geopandas as gpd
+import tqdm as tqdm
 
 warnings.simplefilter(action='ignore', category=Warning)
 
@@ -184,6 +185,83 @@ def calculate_specific_discharge(network, timeseries_discharge):
 
 
     return timeseries_runoff
+
+def check_for_potential_outliers(df, log_mean_df, log_std_df, threshould_std = 10):
+    """
+    Checks each specified original column in the DataFrame (df) to see if values are greater than the thresholds
+    based on the mean and standard deviation values grouped by day of the year.
+
+    Parameters:
+    df (pd.DataFrame): The DataFrame containing the time series data. Assumes DateTimeIndex.
+    log_mean_df (pd.DataFrame): The DataFrame containing mean values grouped by the day of the year.
+    log_std_df (pd.DataFrame): The DataFrame containing standard deviation values grouped by the day of the year.
+    threshold_std (int): The number of standard deviations from the mean to use as a threshold.
+
+    Returns:
+    tuple: A tuple containing:
+        - dict: A dictionary where keys are column names and values are DataFrames (from df) with rows where the conditions are met.
+        - pd.DataFrame: A DataFrame with the same shape as df, containing a full mask indicating where the conditions are met.
+    """
+    # Initialize an empty dictionary to store results and a full mask with the same shape as df
+    results = {}
+    full_mask = pd.DataFrame(False, index=df.index, columns=df.columns)
+    
+    mean_df_above = log_mean_df + threshould_std*(log_std_df)
+    mean_df_below = log_mean_df - threshould_std*(log_std_df)
+    
+    # Iterate through each column in df
+    for column in tqdm.tqdm(df.columns):
+        # Check if the column also exists in mean_df
+        if column not in mean_df_above.columns:
+            continue
+        
+        df_col = pd.DataFrame(df[column])
+        mean_df_above_col = pd.DataFrame(mean_df_above[column])
+        mean_df_below_col = pd.DataFrame(mean_df_below[column])
+        
+        # Convert mean_df index to 'day_of_year' to match the time series DataFrame
+        mean_df_above_col['day_of_year'] = mean_df_above_col.index
+        mean_df_below_col['day_of_year'] = mean_df_below_col.index
+        
+        # Calculate the day of the year for each index in df
+        df_col['day_of_year'] = df.index.dayofyear
+        df_col["date"] = df.index
+        
+        # Merge df with mean_df on the 'day_of_year' column
+        merged_df = df_col.merge(mean_df_above_col, on='day_of_year', suffixes=('', '_mean'))
+        merged_below_df = df_col.merge(mean_df_below_col, on='day_of_year', suffixes=('', '_mean'))
+
+        # Use the sort_values() method to sort the merged DataFrame
+        merged_df = merged_df.sort_values(by="date")
+        merged_below_df = merged_below_df.sort_values(by="date")
+        
+        # Drop the "date" column
+        merged_df.drop("date", axis=1, inplace=True)
+        merged_below_df.drop("date", axis=1, inplace=True)
+        
+        # Reset the index
+        merged_df.reset_index(drop=True, inplace=True)
+        merged_below_df.reset_index(drop=True, inplace=True)
+        
+        # Apply the condition: value in df > 5 times the mean from mean_df
+        mask1 = merged_df[column] > 1 * merged_df[f"{column}_mean"]
+        mask2 = merged_below_df[column] < 1 * merged_below_df[f"{column}_mean"]
+        
+        # Combine the two masks using a logical AND (&) operator
+        combined_mask = mask1 | mask2
+    
+        # Filter the DataFrame based on the mask
+        filtered_df = merged_df[combined_mask][[column]]
+        
+        # Store the filtered DataFrame in the results dictionary
+        results[column] = filtered_df
+        
+        # Update the full mask with the combined mask for the current column
+        full_mask[column] = combined_mask.values
+
+    # Return the results dictionary and the full mask
+    return results, full_mask
+
 
 
 

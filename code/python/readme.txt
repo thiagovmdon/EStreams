@@ -1,11 +1,12 @@
 Observations:
-
-- The Python codes are organised into four folders: 
-    - A_extraction_landscape_attributes: Extraction and Aggregation of the landscape attributes. 
+- The Python codes are organised into five folders: 
+    - A_extraction_landscape_attributes: Extraction and aggregation of the landscape attributes. 
     - B_extraction_meteorological_records: Extraction and aggregation of meteorological records. 
     - C_computation_signatures_and_indices: Hydro-meteorological and streamflow signatures computation. 
-    - D_extras: Additional scripts. 
+    - D_demonstration_streamflow_data: Download instructions for the streamflow catalogue and some demonstrations. 
+    - E_complementary_extra_codes: Complementary scripts that might be used for additional analysis by users. 
 - The scripts contained in C_computation_signatures_and_indices depend on the previous run of B_extraction_meteorological_records. All the other scripts are independent.  
 - Before the Python aggregation codes, one should run first the gee scripts in Google Earth Engine platform and store the results locally.
 - If the GitHub was cloned locally and the requirements are fulfilled, the users can expect to do not experience problems to run the scripts. 
 - The scripts are well commented and give further guidance for the reproducibility of the work. 
+- Users should download and place the 'chromedriver.exe' inside the 'D_demonstration_streamflow_data' directory for a proper use of the 'selenium' python module. 

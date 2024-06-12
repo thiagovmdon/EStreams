@@ -10,5 +10,3 @@ References
 
 License
 - Open source, but no-redistribution of the original (non-modified) data: https://esdac.jrc.ec.europa.eu/content/european-soil-database-derived-data (Last access 23 November 2023)
-
-

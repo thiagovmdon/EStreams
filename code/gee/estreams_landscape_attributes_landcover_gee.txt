@@ -1,5 +1,5 @@
 // Land use and land cover descriptors extraction from Corine:
-
+ 
 // Author: Thiago Nascimento (thiago.nascimento@eawag.ch)
 
 // This notebook is part of the EStreams publication and was used to extract and aggregate 
@@ -10,34 +10,25 @@
 // Inputs: Basins shapefile (uploaded as an asset), Corine data, targetYear.
 // Outputs: CSV file with landcover areas for each basin for a specific year.
 
-// Define the year for which you want to calculate Land cover [1990, 2000, 2006, 2012, 2018]
-var targetYear = 2018; 
+// Define the year for which you want to calculate land cover [1990, 2000, 2006, 2012, 2018]
+var targetYear = 1990;
+
+// Define chunk size for processing
+var chunkSize = 50;
 
 // Load the basins shapefile as a FeatureCollection
-var basins = ee.FeatureCollection("projects/ee-thiagovmdon/assets/estreams_catchments");
+var basinsFC = ee.FeatureCollection("projects/ee-thiagovmdon/assets/estreams_catchments");
 
-// Add the basins shapefile as a layer to the map
-Map.addLayer(basins, {}, 'basins shapefile');
-
-// Define a list of land cover classes for which to calculate forest loss
+// Define a list of land cover classes for which to calculate landcover areas
 var classes = ee.List([111,112,121,122,123,124,131,132,133,141,142,211,212,213,221,222,223,231,241,242,243,244,311,312,313,321,322,323,324,331,332,333,334,335,411,412,421,422,423,511,512,521,522,523]);
 
-// Function to calculate forest loss for a single feature
-/**
- * Calculates forest loss for a single feature.
- * @param {ee.Feature} feature - The input feature for which to calculate forest loss.
- * @param {number} year - The year for which to retrieve the Corine image.
- * @return {ee.FeatureCollection} - The feature collection containing forest loss information.
- */
+// Function to calculate land cover for a single feature
 function calculateCorineClasses(feature, year) {
   var corine = ee.Image('COPERNICUS/CORINE/V20/100m/' + year);
 
-  // Map over the land cover classes and calculate forest loss for each class
-  var corineData = classes.map(function (corineclass) {
-    // Create a mask for the current land cover class
-    var corineMask = corine.select(['landcover']).eq(ee.Number(corineclass));
-    
-    // Calculate the area of the land cover class within the feature's geometry
+  // Calculate land cover for each class
+  var corineData = classes.map(function(corineClass) {
+    var corineMask = corine.select(['landcover']).eq(ee.Number(corineClass));
     var areaCorineMask = corineMask.multiply(ee.Image.pixelArea());
     var areaCorine = areaCorineMask.reduceRegion({
       reducer: ee.Reducer.sum(),
@@ -45,31 +36,47 @@ function calculateCorineClasses(feature, year) {
       scale: 100,
       maxPixels: 1e10
     });
-    
-    // Create a feature with information about the land cover class and area of forest loss
+
     return ee.Feature(null, {
-      'code': feature.get('basin_id'), // Include the basin id
-      'year': year, // Include the year in the csv-file
-      'class': corineclass,
+      'code': feature.get('basin_id'), // Include the basin ID
+      'year': year, // Include the year
+      'class': corineClass,
       'area_sqm': ee.Number(areaCorine.get('landcover'))
     });
   });
-  
+
   return ee.FeatureCollection(corineData);
 }
 
-// Compute Corine classes areas for the feature collection: 
-var results = basins.map(function(feature) {
-  return calculateCorineClasses(feature, targetYear);
-});
+// Calculate the number of chunks needed
+var numChunks = Math.ceil(basinsFC.size().getInfo() / chunkSize);
 
-// Flatten the resulting FeatureCollection
-results = results.flatten();
+// Loop through each chunk
+for (var chunkIndex = 0; chunkIndex < numChunks; chunkIndex++) {
+  // Calculate start and end index for the current chunk
+  var startIdx = chunkIndex * chunkSize;
+  var endIdx = (chunkIndex + 1) * chunkSize - 1;
 
-// Export the results as a CSV file
-Export.table.toDrive({
-  collection: results,
-  description: 'EStreams_lulc' + targetYear + '_attributes_gee',
-  folder: 'EStreams_exports',
-  fileFormat: 'CSV'
-});
+  // Convert the FeatureCollection to a list
+  var basinList = basinsFC.toList(basinsFC.size());
+
+  // Select the subset based on index using ee.List.slice()
+  var selectedBasins = ee.FeatureCollection(basinList.slice(startIdx, endIdx + 1));
+
+  // Calculate Corine data for each selected basin
+  var results = selectedBasins.map(function(feature) {
+    return calculateCorineClasses(feature, targetYear);
+  });
+
+  // Flatten the results and export the data
+  var flattenedResults = results.flatten();
+  var exportDesc = 'EStreams_corine_' + targetYear + '_gee_' + startIdx + '_' + endIdx;
+  
+  Export.table.toDrive({
+    collection: flattenedResults,
+    description: exportDesc,
+    folder: 'EStreams_exports',
+    fileNamePrefix: exportDesc,
+    fileFormat: 'CSV'
+  });
+}

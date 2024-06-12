@@ -1,3 +1,14 @@
 .ipynb_checkpoints/
 __pycache__/
 .DS_Store
+*.cpg
+*.dbf
+*.prj
+*.qmd
+*.shp
+*.shx
+*.tif
+*.nc
+data/*.csv
+results/*.csv
+code/python/D_demonstration_streamflow_data/chromedriver.exe

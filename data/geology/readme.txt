@@ -9,4 +9,3 @@ References:
 Licenses:
 - GLiM: Creative Commons Attribution 3.0 Unported (CC-BY-3.0)
 - Depth to bedrock: Openly shared, without restriction, in accordance with the EOSDIS Data Use Policy.
-
