@@ -1,5 +1,4 @@
 Observations:
-
 - This folder contains five scripts:
 	- EStreams_landscape_attributes_landcover_gee.txt: Extract the landcover attributes from Corine.
 	- EStreams_landscape_attributes_topography_gee.txt: Extract elevation and slope attributes from MERIT. 
