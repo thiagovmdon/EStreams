@@ -4,9 +4,9 @@ This repository is part of the EStreams project and encompasses all the code use
 
 ## Description 
 
-_EStreams_ is an extensive database and catalogue of hydro-climatic and landscape descriptors for +15,000 catchments in Europe. The data covers more than 100 years of open-source catchment aggregated landscape attributes (terrain, soils, lithology, hydrology, vegetation and land cover), climatic forcing time-series, streamflow gauges indices and signatures and a catalogue with detailed information European streamflow time-series and where to find them. EStreams offers both an extensive and extensible data collection together with codes for performing the whole data retrieval and processing. Our vision is to provide a further step towards the integration of hydro-climatic and landscape datasets for Europe and to speed up the data collection process by providing to users a ready-to-use database for large-scale hydrological analysis or model simulations. 
+_EStreams_ is an extensive database and catalogue of hydro-climatic and landscape descriptors for +17,000 catchments in Europe. The data covers more than 100 years of open-source catchment aggregated landscape attributes (terrain, soils, lithology, hydrology, vegetation and land cover), climatic forcing time-series, streamflow gauges indices and signatures and a catalogue with detailed information European streamflow time-series and where to find them. EStreams offers both an extensive and extensible data collection together with codes for performing the whole data retrieval and processing. Our vision is to provide a further step towards the integration of hydro-climatic and landscape datasets for Europe and to speed up the data collection process by providing to users a ready-to-use database for large-scale hydrological analysis or model simulations. 
 
-The EStreams dataset can be found [here](https://doi.org/10.5281/zenodo.10733142), and is currently described by the [preprint](https://doi.org/10.31223/X5M39F). Both are currently under revision. 
+The EStreams dataset can be found [here](https://doi.org/10.5281/zenodo.10733142), and is currently described by the [preprint](https://doi.org/10.31223/X5M39F) (accepted for publication at Nature Scientific Data).
 
 ## About this repository 
 
@@ -62,7 +62,7 @@ To reproduce the Python environment for this project, you can use either the `en
    `pip install -r requirements.txt`
    
 ## References
-The [dataset](https://doi.org/10.5281/zenodo.10733142) and its corresponding [preprint](https://doi.org/10.31223/X5M39F) are currently under revision. If users want to use the data, we recomend them to cite the pre-print and Zenodo repositories in their research. 
+The [dataset](https://doi.org/10.5281/zenodo.10733142) and its corresponding [preprint](https://doi.org/10.31223/X5M39F) (accepted for publication at Nature Scientific Data). If users want to use the data, we recomend them to cite the pre-print and Zenodo repositories in their research. 
 
 Additionally, we would highly appreciated if you also cite the corresponding sources datasets used to derive the EStreams dataset. For details on the references, see the information included in the licenses folder of the EStreams dataset and in the preprint. 
 
