@@ -62,7 +62,7 @@ To reproduce the Python environment for this project, you can use either the `en
    `pip install -r requirements.txt`
    
 ## References
-The [dataset](https://doi.org/10.5281/zenodo.10733142) and its corresponding [preprint](https://doi.org/10.31223/X5M39F) (accepted for publication at Nature Scientific Data). If users want to use the data, we recomend them to cite the pre-print and Zenodo repositories in their research. 
+The [dataset](https://doi.org/10.5281/zenodo.10733142) and its corresponding [preprint](https://doi.org/10.31223/X5M39F). If users want to use the data, we recomend them to cite the pre-print and Zenodo repositories in their research. 
 
 Additionally, we would highly appreciated if you also cite the corresponding sources datasets used to derive the EStreams dataset. For details on the references, see the information included in the licenses folder of the EStreams dataset and in the preprint. 
 

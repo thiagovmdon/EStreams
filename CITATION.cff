@@ -59,8 +59,8 @@ keywords:
   - Catchments
   - Europe
 license: BSD-3-Clause
-version: '0.2.0'
-date-released: '2024-03-02'
+version: '1.0.0'
+date-released: '2024-08-07'
 identifiers:
   - description: Latest version of software
   - type: doi
