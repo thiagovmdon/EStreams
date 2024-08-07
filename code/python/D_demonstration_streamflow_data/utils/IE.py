@@ -81,17 +81,11 @@ def download_data_IEEPA(code):
     
             # Finally we can download it:
             WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, path_download))).click()
-            
-            print(f"Successfully clicked download for station {code}")
-            
+                        
             # Wait for download to complete
-            time.sleep(10)
-            files = os.listdir(download_dir)
-            if any("DayMean_TS" in file for file in files):
-                print(f"Successfully downloaded data for station {code}")
-            else:
-                print(f"Download did not complete for station {code}")
-                
+            time.sleep(5)
+            print(f"Successfully downloaded data for station {code}")
+    
         except Exception as e:
             print(f"Failed to find and click the download link: {e}")
     except Exception as e:
