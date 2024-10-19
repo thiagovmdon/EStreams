@@ -1,8 +1,9 @@
 # Changelog
+## [1.1.0] - 2024-10-20
+### Fixed
+- The function for computing p_seasonality was fixed with a temporary "turn-around" until the module "hydroanalys" is updated. [#fixedpseasonality](https://github.com/thiagovmdon/EStreams/tree/main/code/python/C_computation_signatures_and_indices/estreams_hydrometeorological_signatures.ipynb)
 
 ## [1.0.0] - 2024-08-07
-### Added
-
 ### Changed
 - updated readme.md file
 - updated the codes for time-series demonstration from FR, HR and IE at [utils](https://github.com/thiagovmdon/EStreams/tree/main/code/python/D_demonstration_streamflow_data/utils)
