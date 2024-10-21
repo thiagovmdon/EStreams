@@ -1,6 +1,6 @@
 # EStreams
 
-This repository is part of the EStreams project and encompasses all the code used to derive the dataset, some additional demonstrations and examples. 
+This repository is part of the EStreams project and encompasses all the code used to derive the dataset, some additional demonstrations, and examples. 
 
 ## Description 
 
