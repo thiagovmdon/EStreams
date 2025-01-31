@@ -8,3 +8,4 @@ Files:
 - estreams_soil_attributes.csv
 - estreams_topography_attributes.csv
 - estreams_vegetation_attributes.csv
+- estreams_geology_continental_attributes.csv

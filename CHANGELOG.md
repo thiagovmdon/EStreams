@@ -1,4 +1,10 @@
 # Changelog
+## [1.2.0] - 2025-02-03
+### Added
+- Addition of the code "estreams_geology_continental_data" [#addedgeology](https://github.com/thiagovmdon/EStreams/tree/main/code/python/A_extraction_landscape_attributes/estreams_geology_continental_data.ipynb.ipynb)
+- Update of the readme.txt file at "data/geology"
+- Update of the readme.txt file at "results/staticattributes"
+
 ## [1.1.0] - 2024-10-20
 ### Fixed
 - The function for computing p_seasonality was fixed with a temporary "turn-around" until the module "hydroanalys" is updated. [#fixedpseasonality](https://github.com/thiagovmdon/EStreams/tree/main/code/python/C_computation_signatures_and_indices/estreams_hydrometeorological_signatures.ipynb)
