@@ -1,7 +1,16 @@
 # Changelog
+## [1.3.0] - 2025-06-30
+### Added
+- Addition of the code "estreams_extras_updatedata_basins" [#addedupdatebasins](https://github.com/thiagovmdon/EStreams/tree/main/code/python/E_complementary_extra_codes/estreams_extras_updatedata_basins.ipynb)
+- Added the folder: "data/update_old_basins"
+
+### Changed
+- updated readme.md file
+- updated the codes for definition of nested basins and hierarchy file creation [#nestedbasins](https://github.com/thiagovmdon/EStreams/tree/main/code/python/E_complementary_extra_codes/estreams_extras_nested_catchments.ipynb)
+
 ## [1.2.0] - 2025-02-03
 ### Added
-- Addition of the code "estreams_geology_continental_data" [#addedgeology](https://github.com/thiagovmdon/EStreams/tree/main/code/python/A_extraction_landscape_attributes/estreams_geology_continental_data.ipynb.ipynb)
+- Addition of the code "estreams_geology_continental_data" [#addedgeology](https://github.com/thiagovmdon/EStreams/tree/main/code/python/A_extraction_landscape_attributes/estreams_geology_continental_data.ipynb)
 - Update of the readme.txt file at "data/geology"
 - Update of the readme.txt file at "results/staticattributes"
 
